@@ -98,9 +98,12 @@ INSERT INTO vitals_logs (patient_id, heart_rate, record_time) VALUES
 
 /*
 Giải pháp 1
-- Tạo 2 chỉ mục độc lập idx_drug_name trên cột drug_name và idx_expiry_date trên cột expiry_date
+* Tạo 2 chỉ mục độc lập:
+- idx_drug_name trên cột `drug_name`
+- idx_expiry_date trên cột `expiry_date`
 Giải pháp 2
-- Tạo 1 chỉ mục tổ hợp duy nhất chứa cả 2 cột theo thứ tự idx_drug_name_expiry trên (drug_name, expiry_date)
+* Tạo 1 chỉ mục tổ hợp duy nhất chứa cả 2 cột:
+- idx_drug_name_expiry trên cụm liên kết `(drug_name, expiry_date)`
 
 So sánh
 Giải pháp 1
@@ -124,6 +127,8 @@ FROM pharmacy_inventory
 WHERE drug_name = 'Paracetamol' AND expiry_date <= '2026-12-31';
 
 -- Kịch bản 2
+-- Xóa ký tự % ở đầu chuỗi để hệ thống có thể tra cứu thẳng tới cây để nhảy đúng bản ghi cần tìm mà không phải đọc phần còn lại
+-- Nên để ký tự % ở đầu sẽ gây lỗi full table scan
 EXPLAIN ANALYZE
 SELECT inventory_id, drug_name, batch_number, expiry_date, quantity
 FROM pharmacy_inventory
